@@ -1,6 +1,3 @@
-# solutions/day04/utils.py
-
-
 def parse_grid(content_lines):
     letters = {}
     x_positions = []
