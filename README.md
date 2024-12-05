@@ -12,8 +12,8 @@ This repository contains my solutions for the [Advent of Code 2024](https://adve
 1. **Clone the Repository:**
 
 ```bash
-git clone https://github.com/your_username/advent_of_code_2024.git
-cd advent_of_code_2024
+git clone https://github.com/grabovszky/aoc2024.git
+cd aoc2024
 ```
 
 2. **Install Dependencies:**
@@ -32,6 +32,7 @@ pipenv shell
 
 - `inputs/`: Contains all the input files for each day's challenge, named as dayXX.txt, where XX is the day number (e.g., day01.txt).
 - `main.py`: The main script to run solutions for all days or a specific day.
+- `create_day.py`: A script to automate the creation of a new day's solution structure, including necessary files and directories.
 - `solutions/`:
   - `common.py`: Contains common utility functions, such as `read_input()` for reading input files.
   - `dayXX/`: Each day's solution is in its own directory, where XX is the day number (e.g., day01, day02, etc.).
@@ -55,6 +56,12 @@ To run all days:
 python main.py
 ```
 
+To run all days with timing information:
+
+```bash
+python main.py --time
+```
+
 To run a specific day:
 
 ```bash
@@ -66,6 +73,14 @@ Running Individual Parts
 ```bash
 python -m solutions.DAY_NUMBER.PART_NUMBER
 ```
+
+### Timing Feature
+
+The `main.py` script includes a timing feature to measure the execution time of each part and the total time for each day.
+
+Enable Timing: Use the `--time` flag when running the script.
+Output: The script will display execution times for Part 1, Part 2, and the total time for the day.
+
 
 ## Testing
 
@@ -88,14 +103,27 @@ If you'd like to add a new day's solution or improve existing ones, please follo
 
 ### Adding a New Day's Solution
 
-1. In the `solutions/` directory, create a new folder for the day, following the naming convention `dayXX`, where `XX` is the day number padded with zeros (e.g., day04 for Day 4).
-2. Create an `__init__.py` file inside the new directory to make it a Python package.
-3. Create Solution Files:
-  - `part1.py`: Implement the solution for Part 1.
-  - `part2.py`: Implement the solution for Part 2.
-  - `utils.py`: (Optional) Add any helper functions or classes specific to the day.
-4. Place the day's input file in the `inputs/` directory, named as `dayXX.txt`.
-5. In the `tests/` directory, create a test file named `test_dayXX.py`.
+To streamline the process of adding a new day's solution, use the create_day.py script. This script automates the creation of the necessary files and directories for the next available day.
+
+To create the structure for a new day's challenge:
+
+```bash
+python create_day.py
+```
+
+This script will:
+
+1. Determine the next available day number.
+2. Create the necessary directories and files, including:
+- `solutions/dayXX/`:
+  - `__init__.py`
+  - `utils.py`
+  - `part1.py` (with DAY_NUMBER pre-filled)
+  - `part2.py` (with DAY_NUMBER pre-filled)
+- `inputs/dayXX.txt`: Empty input file ready for your puzzle input.
+- `tests/test_dayXX.py`: Test file with placeholder functions.
+3. Populate files with template code.
+4. Handle errors gracefully, cleaning up any partially created files or directories if an error occurs.
 
 ### Coding Style Guidelines
 
