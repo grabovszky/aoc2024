@@ -3,6 +3,7 @@ from typing import Optional, Any
 from lib.core.timer import Timer
 from lib.utils.logger import Logger
 
+
 class Runner:
     def __init__(self, show_time: bool = False):
         self.show_time = show_time
@@ -11,20 +12,20 @@ class Runner:
 
     def run_part(self, day_number: int, part_number: int, module) -> Optional[Any]:
         result = None
-        
+
         with self.logger.running_part(day_number, part_number):
             try:
                 if self.show_time:
                     self.timer.start()
-                
+
                 result = module.main()
-                
+
                 if self.show_time:
                     timing = self.timer.stop()
                     self.logger.print_success(result, timing.elapsed, part_number)
                 else:
                     self.logger.print_success(result, part_number=part_number)
-                    
+
             except Exception as e:
                 self.logger.print_error(day_number, part_number, e)
 
@@ -53,4 +54,6 @@ class Runner:
 
         if self.show_time:
             timing = self.timer.stop()
-            self.logger.print_timing(f"Total time for Day {day_number:02d}", timing.elapsed) 
+            self.logger.print_timing(
+                f"Total time for Day {day_number:02d}", timing.elapsed
+            )

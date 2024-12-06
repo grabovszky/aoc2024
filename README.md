@@ -19,7 +19,7 @@ cd aoc2024
 2. **Install Dependencies:**
 
 ```bash
-pipenv install
+python scripts/setup.py
 ```
 
 3. **Activate the Virtual Environment:**
@@ -27,6 +27,13 @@ pipenv install
 ```bash
 pipenv shell
 ```
+
+The setup script will:
+- Install all required dependencies
+- Set up pre-commit hooks for:
+  - Code formatting with black
+  - Running tests before commits
+  - Checking Python syntax
 
 ## Project Structure
 
@@ -134,13 +141,32 @@ This script will:
 ### Coding Style Guidelines
 
 - Use Python 3.11 or higher.
-- Follow PEP 8 coding style guidelines. (Use the included `black` command.)
+- Follow PEP 8 coding style guidelines.
 
-Format all files:
+### Code Quality Tools
+
+The project uses pre-commit hooks to ensure code quality. These hooks run automatically on commit and include:
+- Code formatting with black
+- Python syntax checking
+- Running tests
+
+You can run the hooks manually without committing:
 
 ```bash
-black .
+# Run all hooks on all files
+pipenv run pre-commit run --all-files
+
+# Run specific hook on all files
+pipenv run pre-commit run black --all-files
+
+# Run all hooks on staged files
+pipenv run pre-commit run
 ```
+
+The hooks will also run automatically when you try to commit changes. If any hook fails:
+1. The commit will be blocked
+2. The hooks may modify files (e.g., black formatting)
+3. You'll need to stage any changes and try to commit again
 
 ### Adding Tests
 - Test Functions Individually: Write tests for both solve_part1 and solve_part2 functions.

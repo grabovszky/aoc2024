@@ -1,0 +1,24 @@
+repos:
+-   repo: https://github.com/psf/black
+    rev: 23.12.1  # Use the latest stable version
+    hooks:
+    -   id: black
+        language_version: python3.11
+
+-   repo: local
+    hooks:
+    -   id: pytest
+        name: pytest
+        entry: pipenv run pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+        types: [python]
+        stages: [pre-commit]
+        
+    -   id: check-ast
+        name: Check Python AST
+        entry: python -c 'import ast,sys; ast.parse(open(sys.argv[1]).read())'
+        language: system
+        types: [python]
+        files: \.py$

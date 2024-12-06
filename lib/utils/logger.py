@@ -9,10 +9,11 @@ from contextlib import contextmanager
 
 console = Console()
 
+
 class Logger:
     def __init__(self):
         self.live = None
-        self.spinner = Spinner('arrow3')
+        self.spinner = Spinner("arrow3")
 
     @staticmethod
     def print_day_header(day_number: int) -> None:
@@ -27,8 +28,10 @@ class Logger:
     @contextmanager
     def running_part(self, day_number: int, part_number: int):
         spinner_text = f"Running Day {day_number:02d} Part {part_number}..."
-        
-        with console.status(f"[yellow]{spinner_text}[/yellow]", spinner='arrow3') as status:
+
+        with console.status(
+            f"[yellow]{spinner_text}[/yellow]", spinner="arrow3"
+        ) as status:
             try:
                 yield
             finally:
@@ -41,7 +44,11 @@ class Logger:
         )
 
     @staticmethod
-    def print_success(result: Optional[Any] = None, elapsed: Optional[float] = None, part_number: int = 1) -> None:
+    def print_success(
+        result: Optional[Any] = None,
+        elapsed: Optional[float] = None,
+        part_number: int = 1,
+    ) -> None:
         if result is not None:
             panel_style = "bright_green"
             title_emoji = ":star:"
@@ -64,4 +71,4 @@ class Logger:
 
     @staticmethod
     def print_timing(message: str, time: float) -> None:
-        console.print(f"[dim]{message}: {time:.4f} seconds.[/dim]\n") 
+        console.print(f"[dim]{message}: {time:.4f} seconds.[/dim]\n")

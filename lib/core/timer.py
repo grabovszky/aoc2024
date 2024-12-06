@@ -22,9 +22,9 @@ class Timer:
         self.end_time = time.time()
         if self.start_time is None:
             raise RuntimeError("Timer was never started")
-        
+
         return TimingResult(
             elapsed=self.end_time - self.start_time,
             start_time=self.start_time,
-            end_time=self.end_time
-        ) 
+            end_time=self.end_time,
+        )
