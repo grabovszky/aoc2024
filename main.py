@@ -1,6 +1,6 @@
 from lib.core.runner import Runner
 from lib.core.timer import Timer
-from lib.utils.argparser import parse_args
+from lib.utils.argparser import parse_args, get_current_or_latest_day
 from lib.utils.logger import Logger
 
 
@@ -14,7 +14,8 @@ def main():
         timer.start()
 
     if args.all:
-        for day_number in range(1, 26):
+        latest_day = get_current_or_latest_day()
+        for day_number in range(1, latest_day + 1):
             runner.run_day(day_number, args.part)
     else:
         runner.run_day(args.day, args.part)
