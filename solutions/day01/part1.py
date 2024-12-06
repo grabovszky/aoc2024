@@ -20,7 +20,7 @@ def main():
 
     # Solve Part 1
     result = solve_part1(content)
-    print(f"Day {DAY_NUMBER}, Part 1 solution: {result}")
+    return result
 
 
 if __name__ == "__main__":

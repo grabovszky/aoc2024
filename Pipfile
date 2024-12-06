@@ -5,10 +5,11 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-black = {extras = ["jupyter"], version = "*"}
 
 [dev-packages]
+black = {extras = ["jupyter"], version = "*"}
 pytest = "*"
+rich = "*"
 
 [requires]
 python_version = "3.11"

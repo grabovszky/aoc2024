@@ -1,6 +1,56 @@
 import importlib
 import argparse
 import time
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+from rich import box
+
+console = Console()
+
+
+def run_part(day_number, part_number, show_time, module):
+    part_name = f"Part {part_number}"
+    console.print(
+        f":runner: [yellow]Running Day {day_number:02d} {part_name}...[/yellow]"
+    )
+
+    result = None
+    try:
+        if show_time:
+            start_time = time.time()
+        result = module.main()
+        if show_time:
+            elapsed = time.time() - start_time
+    except Exception as e:
+        console.print(
+            f":x: [red]Error running Day {day_number:02d} {part_name}: {e}[/red]"
+        )
+    else:
+        console.print(":sparkles: [green]Completed successfully![/green]")
+        if result is not None:
+            panel_style = "bright_green"
+            title_emoji = ":star:"
+
+            console.print()
+            console.print(
+                Panel(
+                    Text(f"{part_name} result: {result}", style="bold magenta"),
+                    box=box.ROUNDED,
+                    title=f"{title_emoji} {part_name}",
+                    subtitle="AOC 2024 :christmas_tree:",
+                    style=panel_style,
+                    expand=False,
+                )
+            )
+            console.print()
+        else:
+            console.print("[red]No result returned[/red]")
+
+        if show_time:
+            console.print(f"[dim]{part_name} time: {elapsed:.4f} s[/dim]")
+
+    return result
 
 
 def run_day(day_number, show_time=False):
@@ -9,37 +59,31 @@ def run_day(day_number, show_time=False):
         part1_module = importlib.import_module(f"{day_module}.part1")
         part2_module = importlib.import_module(f"{day_module}.part2")
     except ModuleNotFoundError:
-        print(f"Day {day_number:02d} modules not found.")
+        console.print(f":x: [red]Day {day_number:02d} modules not found.[/red]")
         return
 
-    print(f"Running Day {day_number:02d} solutions:")
+    # Start Day
+    console.print(
+        Panel(
+            Text(f"Day {day_number:02d}", justify="center", style="bold magenta"),
+            box=box.HEAVY,
+            expand=True,
+        )
+    )
     day_start_time = time.time()
 
     # Run Part 1
-    try:
-        if show_time:
-            start_time = time.time()
-        part1_module.main()
-        if show_time:
-            part1_time = time.time() - start_time
-            print(f"Part 1 completed in {part1_time:.4f} seconds.")
-    except Exception as e:
-        print(f"Error running Day {day_number:02d} Part 1: {e}")
-
+    run_part(day_number, 1, show_time, part1_module)
     # Run Part 2
-    try:
-        if show_time:
-            start_time = time.time()
-        part2_module.main()
-        if show_time:
-            part2_time = time.time() - start_time
-            print(f"Part 2 completed in {part2_time:.4f} seconds.")
-    except Exception as e:
-        print(f"Error running Day {day_number:02d} Part 2: {e}")
+    run_part(day_number, 2, show_time, part2_module)
 
     if show_time:
         total_day_time = time.time() - day_start_time
-        print(f"Total time for Day {day_number:02d}: {total_day_time:.4f} seconds.\n")
+        console.print(
+            f"[dim]Total time for Day {day_number:02d}: {total_day_time:.4f} seconds.[/dim]\n"
+        )
+    else:
+        console.print()  # Blank line separator if no timing
 
 
 def main():
@@ -66,7 +110,7 @@ def main():
 
     if args.time:
         total_time = time.time() - overall_start_time
-        print(f"Total execution time: {total_time:.4f} seconds.")
+        console.print(f"[dim]Total execution time: {total_time:.4f} seconds.[/dim]")
 
 
 if __name__ == "__main__":
