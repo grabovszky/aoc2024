@@ -7,15 +7,12 @@ def solve_part2(content):
 
     # First, find the guard's original path
     visited_positions = simulate_guard(m, g)
-    if visited_positions is None:
-        # If somehow a loop occurred in part1 (which shouldn't happen by the puzzle definition), return 0
-        return 0
 
-    # We'll consider only the positions visited by the guard (except the starting position).
+    # We'll consider only the positions visited by the guard
     visited_positions = list(visited_positions)
     loops = 0
 
-    # Add a simple logger similar to the original Jupyter version.
+    # Simple logger to see progress
     total_positions = len(visited_positions)
     print(f"Checking {total_positions} positions for possible loops...")
 
