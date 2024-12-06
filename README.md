@@ -32,13 +32,13 @@ pipenv shell
 
 - `inputs/`: Contains all the input files for each day's challenge, named as dayXX.txt, where XX is the day number (e.g., day01.txt).
 - `main.py`: The main script to run solutions for all days or a specific day.
-- `create_day.py`: A script to automate the creation of a new day's solution structure, including necessary files and directories.
+- `create_next_day.py`: A script to automate the creation of a new day's solution structure, including necessary files and directories.
 - `solutions/`:
   - `common.py`: Contains common utility functions, such as `read_input()` for reading input files.
   - `dayXX/`: Each day's solution is in its own directory, where XX is the day number (e.g., day01, day02, etc.).
-  - `part1.py`: Solution for Part 1 of the day's challenge.
-  - `part2.py`: Solution for Part 2 of the day's challenge.
-  - `utils.py`: Helper functions or classes specific to the day.
+    - `part1.py`: Solution for Part 1 of the day's challenge.
+    - `part2.py`: Solution for Part 2 of the day's challenge.
+    - `utils.py`: Helper functions or classes specific to the day.
 - `tests/`:
   - `test_dayXX.py`: Contains tests for Day XX's solutions.
 
@@ -50,13 +50,19 @@ Before running any script ensure you are in the project's root directory and hav
 
 You can run solutions for all days or a specific day using the main.py script.
 
-To run all days:
+To run the current day's solutions:
 
 ```bash
 python main.py
 ```
 
-To run all days with timing information:
+To run all implemented days:
+
+```bash
+python main.py --all
+```
+
+To run with timing information:
 
 ```bash
 python main.py --time
@@ -68,10 +74,10 @@ To run a specific day:
 python main.py --day DAY_NUMBER
 ```
 
-Running Individual Parts
+To run a specific part:
 
 ```bash
-python -m solutions.DAY_NUMBER.PART_NUMBER
+python main.py --day DAY_NUMBER --part PART_NUMBER
 ```
 
 ### Timing Feature
@@ -108,7 +114,7 @@ To streamline the process of adding a new day's solution, use the create_day.py 
 To create the structure for a new day's challenge:
 
 ```bash
-python create_day.py
+python create_next_day.py
 ```
 
 This script will:
