@@ -39,7 +39,12 @@ The setup script will:
 
 - `inputs/`: Contains all the input files for each day's challenge, named as dayXX.txt, where XX is the day number (e.g., day01.txt).
 - `main.py`: The main script to run solutions for all days or a specific day.
-- `create_next_day.py`: A script to automate the creation of a new day's solution structure, including necessary files and directories.
+- `scripts/`:
+  - `create_day.py`: A script to automate the creation of a new day's solution structure, including necessary files and directories.
+  - `setup.py`: A script to setup the project and install dependencies.
+- `lib/`:
+  - `core/`: Contains core functionality, such as `Runner` and `Timer` classes.
+  - `utils/`: Contains utility functions, such as `argparser` and `logger`.
 - `solutions/`:
   - `common.py`: Contains common utility functions, such as `read_input()` for reading input files.
   - `dayXX/`: Each day's solution is in its own directory, where XX is the day number (e.g., day01, day02, etc.).
@@ -121,7 +126,7 @@ To streamline the process of adding a new day's solution, use the create_day.py 
 To create the structure for a new day's challenge:
 
 ```bash
-python create_next_day.py
+python scripts/create_day.py
 ```
 
 This script will:
