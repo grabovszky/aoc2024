@@ -1,41 +1,32 @@
+from multiprocessing import Pool
 from solutions.common import read_input
 from .utils import parse_input, simulate_guard
+
+
+def find_loops(m, g, pos):
+    # Check if placing an obstacle at pos creates a loop.
+    if pos == g or m[pos] != ".":
+        return 0
+
+    # Create modified map with new obstacle
+    m_copy = m.copy()
+    m_copy[pos] = "#"
+
+    # Return 1 if simulation loops, 0 otherwise
+    return 1 if simulate_guard(m_copy, g) is None else 0
 
 
 def solve_part2(content):
     m, g = parse_input(content)
 
-    # First, find the guard's original path
-    visited_positions = simulate_guard(m, g)
+    # Get original path
+    path = simulate_guard(m, g)
 
-    # We'll consider only the positions visited by the guard
-    visited_positions = list(visited_positions)
-    loops = 0
+    # Use multiprocessing to check all positions
+    with Pool() as pool:
+        results = pool.starmap(find_loops, ((m, g, pos) for pos in path))
 
-    # Simple logger to see progress
-    total_positions = len(visited_positions)
-    print(f"Checking {total_positions} positions for possible loops...")
-
-    for i, pos in enumerate(visited_positions, start=1):
-        if pos == g:
-            continue  # skip guard's start position
-
-        # Print progress every 1000 processed positions
-        if i % 1000 == 0:
-            print(f"Processed {i}/{total_positions} obstacle positions...")
-
-        if m[pos] == ".":
-            original = m[pos]
-            m[pos] = "#"  # place a temporary obstacle
-
-            # Re-run simulation
-            result = simulate_guard(m, g)
-            if result is None:  # loop detected
-                loops += 1
-
-            m[pos] = original  # restore original tile
-
-    return loops
+    return sum(results)
 
 
 def main():
