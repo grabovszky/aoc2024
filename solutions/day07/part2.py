@@ -1,5 +1,5 @@
-from .utils import parse_input, solve
 from solutions.common import read_input
+from .utils import parse_input, solve
 
 
 def solve_part2(content):

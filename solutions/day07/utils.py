@@ -1,59 +1,60 @@
+from typing import List, Tuple, Iterator
+from multiprocessing import Pool
 from itertools import product
 
 
 def parse_input(content):
-    lines = content.strip().splitlines()
     equations = []
 
-    for line in lines:
+    for line in content.strip().splitlines():
         target_str, nums_str = line.split(":")
         target = int(target_str.strip())
-        nums = list(map(int, nums_str.strip().split()))
+        nums = [int(n) for n in nums_str.strip().split()]
         equations.append((target, nums))
+
     return equations
 
 
-def can_reach_target(nums, target, allow_concat=False):
-    """
-    Determine if we can insert '+', '*', and optionally '||' between the given numbers (in order)
-    to reach the target value. Operators are evaluated left-to-right with no operator precedence.
+def evaluate(nums, ops):
+    result = nums[0]
 
-    If allow_concat is False: only '+' and '*'.
-    If allow_concat is True: include '||' as well.
-    """
+    for op, num in zip(ops, nums[1:]):
+        if op == "+":
+            result += num
+        elif op == "*":
+            result *= num
+        else:  # op == "||"
+            result = int(f"{result}{num}")
 
-    # If there's only one number, just check it directly
-    if len(nums) == 1:
-        return nums[0] == target
+    return result
 
-    # Define available operators
+
+def generate_all_ops(n, allow_concat):
     ops = ["+", "*"]
     if allow_concat:
         ops.append("||")
+    return product(ops, repeat=n - 1)
 
-    operators_slots = len(nums) - 1
 
-    for combo in product(ops, repeat=operators_slots):
-        value = nums[0]
-        # Apply each operator in order
-        for op, num in zip(combo, nums[1:]):
-            if op == "+":
-                value = value + num
-            elif op == "*":
-                value = value * num
-            elif op == "||":
-                # Concatenate as strings, then convert back to int
-                value = int(str(value) + str(num))
+def check_equation(args):
+    target, nums, allow_concat = args
 
-        if value == target:
-            return True
+    # Check if an equation can be solved, return target if yes, 0 if no
+    if len(nums) == 1:
+        return target if nums[0] == target else 0
 
-    return False
+    for ops in generate_all_ops(len(nums), allow_concat):
+        if evaluate(nums, ops) == target:
+            return target
+    return 0
 
 
 def solve(equations, allow_concat=False):
-    total = 0
-    for target, nums in equations:
-        if can_reach_target(nums, target, allow_concat):
-            total += target
-    return total
+    # Prepare arguments for parallel processing
+    args = [(target, nums, allow_concat) for target, nums in equations]
+
+    # Use multiprocessing to check equations in parallel
+    with Pool() as pool:
+        results = pool.map(check_equation, args)
+
+    return sum(results)
