@@ -1,4 +1,3 @@
-from typing import List, Tuple, Iterator
 from multiprocessing import Pool
 from itertools import product
 
