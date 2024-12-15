@@ -8,26 +8,29 @@ DIRECTIONS = {
 
 def parse_input(input_str):
     """Parse input into grid, moves list, and starting position."""
-    wmap, move = input_str.split("\n\n")
+    grid_str, moves_str = input_str.split("\n\n")
+
+    # Parse grid and find robot position
     grid = []
-    pos = None
+    robot_pos = None
+    for r, line in enumerate(grid_str.split("\n")):
+        grid.append(list(line))  # Convert string to list of chars
+        if "@" in line:
+            robot_pos = (r, line.index("@"))
 
-    for r, line in enumerate(wmap.split("\n")):
-        row = []
-        for c, p in enumerate(line):
-            row.append(p)
-            if p == "@":
-                pos = (r, c)
-        grid.append(row)
+    # Parse moves, ignoring newlines
+    moves = [m for line in moves_str.split("\n") for m in line]
 
-    moves = [m for line in move.split("\n") for m in line]
-    return grid, moves, pos
+    return grid, moves, robot_pos
 
 
 def calculate_gps_score(grid, box_char="O"):
+    """Calculate GPS score for boxes.
+    Score = sum of (100 * row + col) for each box position
+    """
     score = 0
     for r, row in enumerate(grid):
-        for c, p in enumerate(row):
-            if p == box_char:
+        for c, cell in enumerate(row):
+            if cell == box_char:
                 score += 100 * r + c
     return score

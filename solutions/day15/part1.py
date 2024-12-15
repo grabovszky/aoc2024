@@ -3,44 +3,49 @@ from .utils import parse_input, calculate_gps_score, DIRECTIONS
 
 
 def move_train(grid, pos, direction):
-    """Move a train of boxes in the given direction. Returns success flag and new position."""
+    """Try to move robot and any boxes in its path.
+
+    A "train" is the robot and any boxes that need to be pushed.
+    Movement succeeds if there's an empty space at the end of the train.
+    """
     dr, dc = DIRECTIONS[direction]
-    cur_train = []
+    train = []  # List of positions to move (robot + boxes)
 
-    # Find all boxes that need to move
-    tr, tc = pos
-    ok = False
+    # Check if movement is possible by looking ahead
+    r, c = pos
     while True:
-        if grid[tr][tc] in {"@", "O"}:
-            cur_train.append((tr, tc))
-        elif grid[tr][tc] == "#":
-            break
-        else:
-            assert grid[tr][tc] == "."
-            ok = True
-            break
-        tr += dr
-        tc += dc
+        # Found empty space - movement possible
+        if grid[r][c] == ".":
+            return True, move_pieces(grid, train, dr, dc)
+        # Hit a wall - movement impossible
+        if grid[r][c] == "#":
+            return False, pos
+        # Add robot/box to train and keep looking
+        train.append((r, c))
+        r += dr
+        c += dc
 
-    if not ok:
-        return False, pos
 
-    # Move the train
-    new_pos = pos
-    for pr, pc in cur_train[::-1]:
-        if grid[pr][pc] == "@":
-            new_pos = (pr + dr, pc + dc)
-        grid[pr + dr][pc + dc] = grid[pr][pc]
-        grid[pr][pc] = "."
-
-    return True, new_pos
+def move_pieces(grid, positions, dr, dc):
+    """Move all pieces in the train one step in given direction.
+    Returns the robot's new position.
+    """
+    robot_pos = None
+    # Move pieces from back to front to avoid overwriting
+    for r, c in positions[::-1]:
+        # Remember robot's new position
+        if grid[r][c] == "@":
+            robot_pos = (r + dr, c + dc)
+        # Move piece
+        grid[r + dr][c + dc] = grid[r][c]
+        grid[r][c] = "."
+    return robot_pos
 
 
 def solve_part1(content):
-    """Solve part 1: Calculate GPS score after moving boxes in single-width grid."""
+    """Solve part 1: Move robot and boxes in single-width grid."""
     grid, moves, pos = parse_input(content)
 
-    # Process each move
     for move in moves:
         success, pos = move_train(grid, pos, move)
 
@@ -49,8 +54,7 @@ def solve_part1(content):
 
 def main():
     content = read_input(15)
-    result = solve_part1(content)
-    return result
+    return solve_part1(content)
 
 
 if __name__ == "__main__":

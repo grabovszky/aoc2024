@@ -4,86 +4,95 @@ from .utils import parse_input, calculate_gps_score, DIRECTIONS
 
 
 def expand_grid(grid):
-    """Convert single-width grid to double-width grid."""
+    """Convert single-width grid to double-width grid.
+    Each cell becomes two cells:
+        # -> ##    (wall)
+        O -> []    (box)
+        . -> ..    (empty)
+        @ -> @.    (robot)
+    """
     expanded = []
-    pos = None
+    robot_pos = None
+
     for r, line in enumerate(grid):
         row = []
-        for c, p in enumerate(line):
-            if p == "#":
+        for c, cell in enumerate(line):
+            if cell == "#":
                 row.extend(["#", "#"])
-            elif p == "O":
+            elif cell == "O":
                 row.extend(["[", "]"])
-            elif p == ".":
+            elif cell == ".":
                 row.extend([".", "."])
-            elif p == "@":
+            elif cell == "@":
                 row.extend(["@", "."])
-                pos = (r, c * 2)
+                robot_pos = (r, c * 2)  # Position in expanded grid
         expanded.append(row)
-    return expanded, pos
+
+    return expanded, robot_pos
 
 
-def get_train(grid, move, pos):
-    """Get all boxes that should move, using BFS to handle double-width boxes."""
-    q = deque([pos])
-    seen = set()
-    cur_train = []
+def find_movable_pieces(grid, pos, move):
+    """Find all pieces that need to move together using BFS."""
     dr, dc = DIRECTIONS[move]
+    seen = set()
+    to_move = []
+    queue = deque([pos])
 
-    while q:
-        r, c = q.popleft()
+    while queue:
+        r, c = queue.popleft()
         if (r, c) in seen:
             continue
         seen.add((r, c))
 
-        if grid[r][c] == ".":
+        cell = grid[r][c]
+        if cell == ".":
             continue
-        elif grid[r][c] == "#":
+        if cell == "#":
             return False, []
 
-        cur_train.append((r, c))
-        cur_p = grid[r][c]
-        assert cur_p in {"[", "]", "@"}
+        # Add current position to move list
+        to_move.append((r, c))
 
-        if cur_p == "[" and move != ">":
+        # Add connected box part to queue
+        if cell == "[" and move != ">":  # Left part of box
             if (r, c + 1) not in seen:
-                q.append((r, c + 1))
-        elif cur_p == "]" and move != "<":
+                queue.append((r, c + 1))
+        elif cell == "]" and move != "<":  # Right part of box
             if (r, c - 1) not in seen:
-                q.append((r, c - 1))
+                queue.append((r, c - 1))
 
-        q.append((r + dr, c + dc))
+        # Add next position in movement direction
+        queue.append((r + dr, c + dc))
 
-    return True, cur_train
+    return True, to_move
 
 
 def solve_part2(content):
-    """Solve part 2: Calculate GPS score after moving boxes in double-width grid."""
+    """Solve part 2: Move robot and double-width boxes."""
+    # Parse input and expand grid
     grid, moves, _ = parse_input(content)
-
-    # Convert to double-width grid
     grid, pos = expand_grid(grid)
 
-    # Process each move
+    # Process moves
     for move in moves:
-        ok, cur_train = get_train(grid, move, pos)
-        if not ok:
+        can_move, pieces = find_movable_pieces(grid, pos, move)
+        if not can_move:
             continue
 
+        # Move all pieces
         dr, dc = DIRECTIONS[move]
-        for pr, pc in cur_train[::-1]:
-            if grid[pr][pc] == "@":
-                pos = (pr + dr, pc + dc)
-            grid[pr + dr][pc + dc] = grid[pr][pc]
-            grid[pr][pc] = "."
+        for r, c in pieces[::-1]:
+            if grid[r][c] == "@":
+                pos = (r + dr, c + dc)
+            grid[r + dr][c + dc] = grid[r][c]
+            grid[r][c] = "."
 
     return calculate_gps_score(grid, box_char="[")
 
 
 def main():
     content = read_input(15)
-    result = solve_part2(content)
-    return result
+    return solve_part2(content)
 
 
 if __name__ == "__main__":
