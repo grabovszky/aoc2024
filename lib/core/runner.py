@@ -1,12 +1,14 @@
 import importlib
 from typing import Optional, Any
 from lib.core.timer import Timer
+from lib.core.performance import measure_performance
 from lib.utils.logger import Logger
 
 
 class Runner:
-    def __init__(self, show_time: bool = False):
+    def __init__(self, show_time: bool = False, show_perf: bool = False):
         self.show_time = show_time
+        self.show_perf = show_perf
         self.logger = Logger()
         self.timer = Timer()
 
@@ -15,16 +17,23 @@ class Runner:
 
         with self.logger.running_part(day_number, part_number):
             try:
-                if self.show_time:
+                if self.show_time or self.show_perf:
                     self.timer.start()
 
-                result = module.main()
-
-                if self.show_time:
-                    timing = self.timer.stop()
-                    self.logger.print_success(result, timing.elapsed, part_number)
+                if self.show_perf:
+                    result, metrics = measure_performance(module.main)()
+                    self.logger.print_success(
+                        result, metrics=metrics, part_number=part_number
+                    )
                 else:
-                    self.logger.print_success(result, part_number=part_number)
+                    result = module.main()
+                    if self.show_time:
+                        timing = self.timer.stop()
+                        self.logger.print_success(
+                            result, elapsed=timing.elapsed, part_number=part_number
+                        )
+                    else:
+                        self.logger.print_success(result, part_number=part_number)
 
             except Exception as e:
                 self.logger.print_error(day_number, part_number, e)

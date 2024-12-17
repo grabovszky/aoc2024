@@ -47,6 +47,7 @@ class Logger:
     def print_success(
         result: Optional[Any] = None,
         elapsed: Optional[float] = None,
+        metrics: Optional[Any] = None,
         part_number: int = 1,
     ) -> None:
         if result is not None:
@@ -68,6 +69,17 @@ class Logger:
 
         if elapsed is not None:
             console.print(f"[dim]Part {part_number} time: {elapsed:.4f} s[/dim]")
+
+        if metrics is not None:
+            console.print(
+                f"[dim]Part {part_number} time: {metrics.execution_time:.4f} s[/dim]"
+            )
+            console.print(
+                f"[dim]Part {part_number} memory: {metrics.memory_used/1024:.1f} KB[/dim]"
+            )
+            console.print(
+                f"[dim]Part {part_number} peak memory: {metrics.peak_memory/1024:.1f} KB[/dim]"
+            )
 
     @staticmethod
     def print_timing(message: str, time: float) -> None:

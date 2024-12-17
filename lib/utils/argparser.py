@@ -10,6 +10,7 @@ class Args:
     day: Optional[int]
     part: Optional[int]
     time: bool
+    perf: bool
     log_level: str
     all: bool
 
@@ -55,6 +56,11 @@ def parse_args() -> Args:
         help="Display execution time for each part.",
     )
     parser.add_argument(
+        "--perf",
+        action="store_true",
+        help="Display detailed performance metrics (time and memory usage).",
+    )
+    parser.add_argument(
         "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
         default="INFO",
@@ -76,6 +82,7 @@ def parse_args() -> Args:
         day=args.day if not args.all else None,
         part=args.part,
         time=args.time,
+        perf=args.perf,
         log_level=args.log_level,
         all=args.all,
     )

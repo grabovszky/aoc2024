@@ -6,7 +6,7 @@ from lib.utils.logger import Logger
 
 def main():
     args = parse_args()
-    runner = Runner(show_time=args.time)
+    runner = Runner(show_time=args.time, show_perf=args.perf)
     logger = Logger()
 
     if args.time:
