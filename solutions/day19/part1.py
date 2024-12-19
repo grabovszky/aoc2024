@@ -1,14 +1,14 @@
 from solutions.common import read_input
-from .utils import parse_input, num_arrangements
+from .utils import parse_input, solve_designs_parallel
 
 
 def solve_part1(content):
     """Calculate how many designs are possible with given towel patterns."""
     towels, designs = parse_input(content)
-    # Convert towels to tuple for caching
-    towels_tuple = tuple(towels)
 
-    return sum(num_arrangements(design, towels_tuple) > 0 for design in designs)
+    # Process all designs in parallel
+    results = solve_designs_parallel(designs, towels)
+    return sum(1 for result in results if result > 0)
 
 
 def main():
