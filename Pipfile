@@ -9,6 +9,7 @@ rich = "*"
 pytest = "*"
 pre-commit = "*"
 black = "*"
+numba = "*"
 
 [dev-packages]
 
